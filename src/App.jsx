@@ -1,63 +1,29 @@
-import React, { Component } from 'react';
-import TaskList from "./components/TaskList";
-import Header from "./components/Header";
-import './App.css'
+import { Header } from './components/Header/Header'
+import { TaskList } from './components/TaskList/TaskList'
 
-class App extends Component {
-  state = {
-    tasks: [
-      { name: 'Aprender sobre React', completed: true },
-      { name: 'Realizar el laboratorio sobre listado de tareas', completed: true },
-      { name: 'Pasar IETI', completed: false },
-    ],
-  };
+const tasks = [
+  {
+      name: "Aprender sobre React.",
+      state: false
+  },
+  {
+      name: "Realizar el laboratorio sobre listado de tareas.",
+      state: false
+  },
+  {
+      name: "Pasar IETI.",
+      state: true
+  },
+]
 
-  handleToggleTask = (taskName) => {
-    this.setState((prevState) => {
-      const updatedTasks = prevState.tasks.map((task) => {
-        if (task.name === taskName) {
-          return { ...task, completed: !task.completed };
-        }
-        return task;
-      });
+function App() {
 
-      return { tasks: updatedTasks };
-    });
-  };
-
-  handleTaskNameChange = (event) => {
-    this.setState({ newTaskName: event.target.value });
-  };
-
-  handleNewTask = (event) => {
-    event.preventDefault();
-    const newTaskName = this.state.newTaskName;
-    if (newTaskName.trim() !== '') {
-      const newTask = { name: newTaskName, completed: false };
-      this.setState((prevState) => ({
-        tasks: [...prevState.tasks, newTask],
-        newTaskName: '',
-      }));
-    }
-  };
-
-  render() {
-    return (
-      <div className="App">
-        <Header /> {}
-        <form onSubmit={this.handleNewTask}>
-          <input
-            type="text"
-            placeholder="Nueva tarea"
-            value={this.state.newTaskName}
-            onChange={this.handleTaskNameChange}
-          />
-          <button type="submit">Agregar tarea</button>
-        </form>
-        <TaskList tasks={this.state.tasks} onToggleTask={this.handleToggleTask} />
-      </div>
-    );
-  }
+  return (
+    <>
+      <Header />
+      <TaskList list={tasks}/>
+    </>
+  );
 }
 
-export default App;
+export default App

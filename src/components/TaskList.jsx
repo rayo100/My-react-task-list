@@ -1,19 +1,39 @@
-import React from 'react';
-import Task from './Task'; 
+import { useEffect, useState } from "react";
+import { Task } from "../Task/Task";
 
-const TaskList = ({ tasks, onToggleTask }) => {
-  return (
-    <div>
-      <h2>Lista de Tareas</h2>
-      <ul>
-        {tasks.map((task) => (
-          <li key={task.name}>
-            <Task taskName={task.name} state={task.completed} onToggle={onToggleTask} />
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+export function TaskList(props){
+    const { list } = props;
+    const [savedTasks, setSaved] = useState({});
 
-export default TaskList;
+    const handleCompleatedChange = (name, state) => {
+        let compleatedTasks = {...savedTasks};
+        compleatedTasks[`${name}`] = {"compleated": state};
+        setSaved(compleatedTasks);
+        localStorage.setItem("tasks", JSON.stringify(compleatedTasks));
+    };
+
+    const setInitialState = (task) => {
+        if(savedTasks[`${task.name}`] && JSON.stringify(savedTasks) !== "{}"){
+            return savedTasks[`${task.name}`]["compleated"];
+        }
+        return task.state
+    };
+
+    useEffect(() => {
+        const compleatedTasks = JSON.parse(localStorage.getItem("tasks"));
+        if (compleatedTasks !== null) setSaved(compleatedTasks);
+    }, []);
+
+    return (
+        <ul>
+            {list.map((task) => (
+                <Task 
+                    key={ task.name } 
+                    name={ task.name } 
+                    onCompleatedClick={handleCompleatedChange}
+                    state={ setInitialState(task) } 
+                    />
+            ))}
+        </ul>
+    );
+}
