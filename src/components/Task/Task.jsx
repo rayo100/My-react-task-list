@@ -1,25 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Task } from "../Task/Task";
+import { useTasks } from "../../hooks/useTasks";
 
-export function Task(props) {
+export function TaskList(){
+    const [tasks, createTask, deleteTask, updateTask] = useTasks();
 
-    let { name , state, onCompleatedClick } = props;
+    const handleCreateTask = () => {
+        let newName = prompt("Enter the name of the new task: ")
+        let newTask = {
+            name: newName
+        }
+        createTask(newTask);
+    };
 
-    const onCompleatedTaskClick = () => {
-        state = !state;
-        onCompleatedClick(name, state);
-    }
+    let handleUpdateTask = (task) => {
+        let newName = prompt("Enter the new name of the task: ");
+        task.name = newName;
+        updateTask(task);
+    };
 
-    console.log(name + " Desde Task: " + state)
+    let handleDeleteTask = (task) => {
+        deleteTask(task)
+    };
+
+    let checkTask = (task) => {
+        updateTask(task);
+    };
 
     return (
-        <li>
-            <label htmlFor={name}>
-                {name}
-                <input type="checkbox" checked={state} name={name} onChange={onCompleatedTaskClick}/>
-            </label>
-        </li>
+        <>
+            <button onClick={handleCreateTask}>Add</button>
+            <ul>
+                {tasks.map((task) => (
+                    <Task 
+                        key={ task.id } 
+                        task={ task }
+                        onUpdate={handleUpdateTask}
+                        onDelete={handleDeleteTask}
+                        onCheck={checkTask}
+                    />
+                ))}
+            </ul>
+        </>
+        
     );
 }
-  
-  
-  
